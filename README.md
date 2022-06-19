@@ -15,6 +15,6 @@ All of our data gathered from [adrogame.com](https://adrogame.com/) Database<br>
 # Runnig the WebApplication:<br>
 1- install [nodejs](https://nodejs.org) on your computer<br>
 2- Open your Terminal In the Root directory of the project<br>
-3- type: `npm start`<br>
+3- Enter `npm start` and then press Return<br>
 4- Open your Browser and in the URL type: `localhost:3000`<br>
 5- press Start Button and you can work with datavisualization <br>
