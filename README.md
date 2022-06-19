@@ -1,7 +1,7 @@
 # WELCOME TO ADVER-GAME DATA-VISUALIZATION
 **An interactive datavisualization web application created with D3.js version3 and nodeJS and Jquery.js<br>**
 # Description
-In this web-based web-application for visualizing adver-game campaigns data,
+In this web-application for visualizing adver-game campaigns data,
 we Visualized the data of 50,000 adver-game users.
 In this Visualization, all our efforts have been on the optimal use of visual elements and information visualization channels.
 The system is designed so that those who work with it, be able to interact with it.
@@ -13,8 +13,8 @@ and pay attention to this data in their next decisions about the leading campaig
 
 All of our data gathered from [adrogame.com](https://adrogame.com/) Database<br>
 # Runnig the WebApplication:<br>
-1- install node.js on your computer<br>
+1- install [nodejs](https://nodejs.org) on your computer<br>
 2- Open your Terminal In the Root directory of the project<br>
-3- type: npm start<br>
-4- Open your Browser and in the URL type: localhost:3000<br>
-5- press Start Button and you will see the datavisualizaiton<br>
+3- type: `npm start`<br>
+4- Open your Browser and in the URL type: `localhost:3000`<br>
+5- press Start Button and you can work with datavisualization <br>
