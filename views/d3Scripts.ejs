@@ -1,0 +1,263 @@
+<script>
+    d3.select(window).on("resize",resize);
+    resize();
+
+    //document.getElementById("myBtn").onclick = function() {addingCircles()};
+
+    function resize(){
+        //calling new series of circles
+        $(document).ready(function(){
+            $("#myBtn").click(function(){
+                //$(this).hide();
+                addingCircles();
+            });
+        });
+
+        //Adding three more circles
+        function addingCircles(){
+            let width = window.innerWidth - 50,
+                height = window.innerWidth - 50;
+            let nodes2 = [
+                {name:'werer'},
+                {name:'sdfsdf'},
+                {name:'sdfsdef'}
+            ];
+            // build nodes in d3
+            let node2 = d3.select('svg').selectAll('.node2')
+                .data(nodes2)
+                .enter().append('circle')
+                .attr('class','node2')
+                .attr('cx', function (d,i){ return (i+1)*(width/4)})
+                .attr('cy', function (d,i){ return height/2;})
+                .attr('r', width*0.05)
+            //.attr('cursor','pointer');
+
+            //append a shape or image
+
+        }
+
+        let svgTest =d3.select("table").select("svg");
+        if(!svgTest.empty()){
+            svgTest.remove();
+        }
+
+        // set a width and height for our SVG
+        //console.log(window.innerWidth);
+        /*let width = window.innerWidth - 300,
+            height = 800;*/
+            //height = window.innerHeight - 50;
+        let box = document.querySelector('.col-12');
+        let width = box.offsetWidth*0.95;
+        let height = window.innerHeight - 50;
+
+// Defining some colors
+        let colors = [
+            {color:'red'},
+            {color:'blue'},
+            {color:'green'},
+            {color:'yellow'},
+            {color:'orange'},
+        ]
+
+
+// Define the nodes to be drawn
+        let nodes = [];
+        for(var i = 1; i <= 100; i++){
+            nodes.push({id:i});
+        }
+        /*let nodes = [
+            {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5},{id:7},{id:8},{id:9},{id:10}
+        ];*/
+
+        let mains1 = [
+            {name:'expense',size:1},
+            {name:'prize',size: 2},
+            {name:'salary',size: 5}
+        ]
+
+        let mains2 = [
+            {name:'expense',size:3},
+            {name:'prize',size: 2},
+            {name:'salary',size: 3}
+        ]
+
+//add links
+        //alert(nodes.length);
+        var nodeLinks = [];
+        for (var i = 0;i <= nodes.length;i++){
+            if(i == nodes.length - 1){
+                nodeLinks[i] =  {source:i,target:0};
+                break
+            }
+            nodeLinks.push({source: i,target:i+1});
+        }
+
+        //nodeLinks[0] = {source:1};
+        //console.log(nodeLinks);
+        //console.log(nodeLinks[0].source);
+
+        /*let links = [
+            { source : 0,target:1},
+            { source : 1,target:2},
+            { source : 2,target:3},
+            { source : 3,target:4},
+            { source : 4,target:0}
+        ]
+
+        let mainLinks = [
+            { source: 0,target:1},
+            { source: 1,target:2},
+            { source: 2,target:0}
+        ]*/
+
+
+
+// Add a SVG to the body for our graph
+        let svg = d3.select('table').append('svg')
+            .attr('width', width)
+            .attr('height', height);
+            //.attr('id','svgId');
+
+// add links to svg
+        /*let link = svg.selectAll('.link')
+            .data(links)
+            .enter().append('line')
+            .attr('class','link');*/
+
+
+        //************adding groups in main svg
+        let groupSelection1 = svg.append('g')
+        //.attr('transform','translate(100,200)')
+        .attr('class','groups1');
+
+        let groupSelection2 = svg.append('g')
+        .attr('class','groups2');
+
+        //*******************adding main nodes
+        /* adding group main 1 nodes */
+        let main1 = svg.selectAll('.main1')
+            .data(mains1)
+            .enter().append('circle')
+            .attr('class','main1')
+            .style('fill',function (d,i){ return colors[i].color})
+            .attr('cx', function (d,i){ return (i+1)*(width/4)})
+            .attr('cy', function(d,i) { return height/2; })
+            .attr('r', function (d,i) { return d.size*5})
+            //.attr('cursor','move');//this code is for changing the shape of cursor
+        /* adding group 2 main nodes */
+        let main2 = svg.selectAll('.main2')
+            .data(mains2)
+            .enter().append('circle')
+            .attr('class','main2')
+            .style('fill',function (d,i){ return colors[i+1].color})
+            .attr('cx', function (d,i){ return (i+1)*(width/4)})
+            .attr('cy', function(d,i) { return height/2; })
+            .attr('r', function (d,i) { return d.size*5})
+            //.attr('cursor','move');//this code is for changing the shape of cursor
+
+        //**********************adding nodes
+        /* adding nodes for group1 */
+        let node = groupSelection1.selectAll('.node')  //creating one group and adding all the nodes in it
+            .data(nodes)
+            .enter().append('circle')
+            .attr('class', 'node')
+            .attr('cx', function(d,i) { return (i+1)*(width/4); }) //relative position
+            .attr('cy', function(d,i) { return height/2; }) //relative position
+            .attr('r', /*Math.random()**/(width*0.003))  //radius = size of circle
+            //.attr('cursor','move');  //this code is for changing the shape of cursor
+        /* adding nodes for group2 */
+
+// create the force layout graph
+        let force = d3.layout.force()
+            .size([width/6, height/2])
+            .nodes(nodes)
+            .links(nodeLinks)
+            .on('tick',tick)
+            //.charge(0.5)
+            .gravity(0.5)
+            //.alpha(5)
+            .friction(0.9)
+
+            .linkDistance(180)
+            //.theta(0.5)
+            .start();
+
+        //force function for main nodes
+        let forceForMain1 = d3.layout.force()
+            .size([width/6,height/2])
+            .nodes(mains1)
+            //.links(mainLinks)
+            .on('tick',tick)
+            .gravity(0.1)
+
+            .linkDistance(width/2)
+            .friction(0.9)
+            .start();
+
+        //force function for main2 nodes
+        let forceForMain2 = d3.layout.force()
+            .size([width/2,height/2])
+            .nodes(mains2)
+            /*.links(mainLinks)*/
+            .on('tick',tick)
+            .gravity(0.1)
+            .linkDistance(width/2)
+            .start();
+
+
+        function tick() {
+            node.attr('cx', function (d){ return d.x;})
+                .attr('cy',function (d){ return d.y;})
+                .call(force.drag);
+
+            main1.attr('cx', function (d){ return d.x;})
+                .attr('cy',function (d){ return d.y;})
+                .call(forceForMain1.drag);
+
+            main2.attr('cx', function (d){ return d.x;})
+                .attr('cy',function (d){ return d.y;})
+                .call(forceForMain2.drag);
+
+
+
+
+            /*link.attr('x1',function (d){ return d.source.x;})
+                .attr('y1',function (d){ return d.source.y;})
+                .attr('x2',function (d){ return d.target.x;})
+                .attr('y2',function (d){ return d.target.y;})*/
+        }
+
+
+
+        //**********dragging rect on svg
+       // bar = svg.append('rect');
+        drag = d3.behavior.drag();
+
+
+
+        // This function is called on drag
+        function move(d) {
+            var bar = d3.select(this);
+            // Update the position of the bar by adding the drag distance in each coordinate
+            bar.attr('x', parseInt(bar.attr('x'), 10) + d3.event.dx)
+                .attr('y', parseInt(bar.attr('y'), 10) + d3.event.dy);
+        }
+
+        drag.origin(Object)
+            .on('drag', move);
+
+            bar.attr('x', (width - 200) / 2)
+                .attr('y', (height - 200) / 2)
+                .attr('width', 200)
+                .attr('height', 200)
+                .attr('fill', '#98CFEA')
+                .call(drag);
+    }
+
+    //adding some style to our svg tag
+    svg.style("opacity", 0)
+        .transition()
+        .duration(2000)
+        .style("opacity",1);
+
+</script>

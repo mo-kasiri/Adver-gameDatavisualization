@@ -1,0 +1,587 @@
+<script>
+    // PARAMS
+function mainFunction(){
+    /*var systems = [
+        {name:"kale" ,size: 20,population:10},
+        {name:"ramak",size:30,population: 2},
+        {name:"farkhonde",size: 40,population: 2},
+        {name:"Avang",size:50,population: 2},
+        {name:"Domino",size:60,population: 8},
+        {name:"Tap30",size:20,population: 2},
+        {name:"Pegah",size:40,population: 2},
+        {name:"Bimito",size:10,population: 5}
+    ];*/
+
+            var width = window.innerWidth,
+                height = window.innerHeight+50,
+                padding = 5, // separation between same-color nodes
+                clusterPadding = 5, // separation between different-color nodes
+                maxRadius = 10, // Small node radius
+                minRadius = 6,
+                linkStrengthMin = 5, // USed for linear scaling of link strength
+                linkStrengthMax = 10;
+            var n =0;
+           for(var q = 0;q<systems.length;q++){
+               n += systems[q].population;
+           }
+             // total number of nodes
+             // number of distinct clusters
+
+
+
+            var m = systems.length;
+            /*var links = [
+                {
+                    source: "kale",
+                    target: "kale",
+                    //count: 2
+                },
+                {
+                    source: "ramak",
+                    target: "ramak",
+                    //count: 5
+                },
+                {
+                    source: "farkhonde",
+                    target: "farkhonde",
+                    //count: 8
+                },
+                {
+                    source: "Avang",
+                    target: "Avang",
+                    //count: 5
+                },
+                {
+                    source: "Domino",
+                    target: "Domino",
+                    //count: 5
+                },
+                {
+                    source: "Tap30",
+                    target: "Tap30",
+                    //count: 4
+                },
+                {
+                    source: "Pegah",
+                    target: "Pegah",
+                    //count: 10
+                },
+                /!*{
+                    source: "Bimito",
+                    target: "Bimito",
+                    //count: 4
+                }*!/
+            ];*/
+
+            var color = d3.scale.category10().domain(d3.range(m+1));
+            let myColors = [
+                '#1abc9c',
+                '#3498db',
+                '#8e44ad',
+                '#95a5a6',
+                '#f1c40f',
+                '#e74c3c',
+                '#d35400',
+                '#27ae60',
+                '#9b59b6',
+                '#2c3e50'
+            ];
+
+            var clusters = new Array(m);
+            var minCount = 99999,
+                maxCount = -1;
+            // Build nodes with random data
+            let j = 0;
+            /*var node = function CreatingNodes(n){
+                for(var j = 0;j<n;j++){
+
+                }
+            }
+            */
+            var counter = 0;
+            var nodes = d3.range(n+m).map(function(data,index) {
+                //var i = Math.floor(Math.random() * m)
+                counter++
+                if(counter === 8){
+                    counter = 0;
+                }
+                var r = 5;//small circles radius
+                //console.log("this is j: "+j);
+                let d = {
+                    cluster: counter,
+                    radius: r,
+                    //x:Math.cos(i / m * 2 * Math.PI) * 200 + width / 2 + Math.random(),
+                    //y:Math.sin(i / m * 2 * Math.PI) * 200 + height / 2 + Math.random(),
+                    class: "",
+                    label: ""
+                }
+                //console.log(d);
+                /*for(var w=0;w<=n;w++){
+                    if(j<systems[w].population){
+                        d.cluster = 0;
+                        d.class = "cluster"+w;
+                    }
+                }*/
+
+
+                /*if(systems[0] && j < systems[0].population){
+                    d.cluster = 0;
+                    d.class = "cluster0";
+                }
+                else if(systems[1] && j <= systems[0].population + systems[1].population ){
+                    d.cluster = 1;
+                    d.class = "cluster1";
+                }
+                else if(systems[2] && j <= systems[0].population + systems[1].population + systems[2].population ){
+                    d.cluster = 2;
+                    d.class = "cluster2";
+                }
+                else if(systems[3] && j <= systems[0].population + systems[1].population + systems[2].population + systems[3].population ){
+                    d.cluster = 3;
+                    d.class = "cluster3";
+                }
+                else if(systems[4] && j <= systems[0].population + systems[1].population+systems[2].population + systems[3].population + systems[4].population ){
+                    d.cluster = 4;
+                    d.class = "cluster4";
+                }
+                else if(systems[5] && j <= systems[0].population+systems[1].population+systems[2].population+systems[3].population+systems[4].population+systems[5].population ){
+                    d.cluster = 5;
+                    d.class = "cluster5";
+                }
+                else if(systems[6] && j <= systems[0].population + systems[1].population + systems[2].population+systems[3].population+systems[4].population+systems[5].population+systems[6].population ){
+                    d.cluster = 6;
+                    d.class = "cluster6";
+                }
+                else if(systems[7] && j <= systems[0].population+systems[1].population+systems[2].population+systems[3].population+systems[4].population+systems[5].population+systems[6].population+systems[7].population ){
+                    d.cluster = 7;
+                    d.class = "cluster7";
+                }*/
+                //console.log()
+                j++;
+
+
+
+               //console.log(d);
+                if (!clusters[counter]) {
+                    d.radius = 50;
+                    d.label = systems[counter].name;
+                    clusters[counter] = d;
+                }
+                //console.log(clusters);
+                /*if(!clusters2[i]) {
+                    d.radius = 20;
+                    d.label = systems[i];
+                    clusters2[i] = d;
+                }*/
+
+                return d;
+            });
+            //console.log(nodes);
+
+            //**specify every cluster main radius size
+            for(var w =0 ; w< m ;w++){
+                clusters[w].radius = systems[w].size;
+                clusters[w].cluster = w;
+                clusters[w].class = "maincluster"+w;
+            }
+
+
+            //**changing the nodes
+        for(var h=0;h< nodes.length; h++){
+
+            //console.log("node:")
+            //console.log(nodes[h]);
+            console.log("h is:"+h)
+
+            if(nodes[h].radius === 5){
+                    //**start counting
+                if(h-7 <= systems[0].population){
+                     nodes[h].cluster = 0;
+                     nodes[h].class = "cluster0";
+
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population ){
+                    nodes[h].cluster = 1;
+                    nodes[h].class = "cluster1";
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population + systems[2].population){
+                    nodes[h].cluster = 2;
+                    nodes[h].class = "cluster2";
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population + systems[2].population + systems[3].population){
+                    nodes[h].cluster = 3;
+                    nodes[h].class = "cluster3";
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population + systems[2].population + systems[3].population + systems[4].population){
+                    nodes[h].cluster = 4;
+                    nodes[h].class = "cluster4";
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population + systems[2].population + systems[3].population + systems[4].population + systems[5].population){
+                    nodes[h].cluster = 5;
+                    nodes[h].class = "cluster5";
+                 }
+                 else if(h-7 <= systems[0].population + systems[1].population + systems[2].population + systems[3].population + systems[4].population + systems[5].population + systems[6].population){
+                    nodes[h].cluster = 6;
+                    nodes[h].class = "cluster6";
+                 }
+                 else if(h-7 <= n ){
+                    nodes[h].cluster = 7;
+                    nodes[h].class = "cluster7";
+                 }
+                 /*console.log('changed node:');
+                 console.log(nodes[h]);*/
+
+                /*if(nodes[h].cluster === 0){
+                    nodes[h].label = 'kale';
+                }
+                if(nodes[h].cluster === 1){
+                    nodes[h].label = 'ramak';
+                }
+                if(nodes[h].cluster === 2){
+                    nodes[h].label = 'farkhonde';
+                }
+                if(nodes[h].cluster === 3){
+                    nodes[h].label = 'Avang';
+                }
+                if(nodes[h].cluster === 4){
+                    nodes[h].label = 'Domino';
+                }
+                if(nodes[h].cluster === 5){
+                    nodes[h].label = 'tap30';
+                }
+                if(nodes[h].cluster === 6){
+                    nodes[h].label = 'pegah';
+                }
+                if(nodes[h].cluster === 7){
+                    nodes[h].label = 'bimito';
+                }*/
+                 //**end of counting
+
+            }else{
+                console.log('this is a main method');
+            }
+        }
+            //console.log(clusters);
+
+            // Linking by element label
+            // Introduces limitation for only linking cluster elements, change "clusters" to "nodes" to use all.
+            /*var nodeByName = d3.map(clusters, function(d) {
+                return d.label;
+            });*/
+            /*links.forEach(function(d) {
+                d.source = nodeByName.get(d.source);
+                d.target = nodeByName.get(d.target);
+            });*/
+
+            // Grab min and max for linear scaling of link strength
+            /*links.forEach(function(d) {
+                if (d.count > maxCount) maxCount = d.count;
+                if (d.count < minCount) minCount = d.count;
+            });*/
+
+            // Linear scaling number between given range
+            function scaleBetween(unscaledNum, minAllowed, maxAllowed, min, max) {
+                return (
+                    (maxAllowed - minAllowed) * (unscaledNum - min) / (max - min) + minAllowed
+                );
+            }
+
+            //  INIT
+
+            var force = d3.layout
+                .force()
+                .nodes(nodes)
+                //.alpha(5)
+                //.links(links)
+                .size([width, height])
+                //.linkDistance(0)
+                /*.linkStrength(function(d) {
+                    //console.log(scaleBetween(d.count, 0.1, 50, minCount, maxCount))
+                    return scaleBetween(d.count, 0.1, 5, minCount, maxCount);
+                })*/ // There is no link bitween them in my version
+                //.friction(1)
+                .charge(-10) // sets the area of all data in my case
+                .gravity(0.05)
+                .on("tick", tick)
+                .start();
+
+            var svg = d3
+                .select("#svgContainer").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+           /* var link = svg
+                .selectAll(".link")
+                .data(links)
+                .enter()
+                .append("line")
+                .attr("class", "link")
+                .attr("stroke-width", function(d) {
+                    return 5;
+                    //return d.count;
+                })
+                .attr("x1", function(d) {
+                    return d.source.x;
+                })
+                .attr("y1", function(d) {
+                    return d.source.y;
+                })
+                .attr("x2", function(d) {
+                    return d.target.x;
+                })
+                .attr("y2", function(d) {
+                    return d.target.y;
+                });*/
+
+            var node = svg
+                .selectAll("circle")
+                .data(nodes)
+                .enter()
+                .append("circle")
+                .style("fill", function(d) {
+                    //return color(d.cluster);
+                    return myColors[d.cluster];
+                })
+                .attr('class',function (d){ return d.class})
+                .call(force.drag);
+
+            var rect = svg
+                .selectAll("rect")
+                .data(nodes)
+                .enter()
+                .append("rect")
+                .style('opacity','0');
+
+            var label = svg
+                .selectAll("text")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("x", function(d) {
+                    return d.cx;
+                })
+                .attr("y", function(d) {
+                    return d.cy;
+                })
+                .text(function(d) {
+                    //this.color = color(d.cluster);
+                    this.color =  myColors[d.cluster];
+                    return d.label;
+                })
+                //.attr("class", "label")
+                .attr("class",function (d,i){
+                   return  d.class
+                })
+                .style('color','white')
+                .call(getBB);
+
+            svg
+                .selectAll("rect")
+                .attr("rx", "5")
+                .attr("x", function(d) {
+                    return d.x - d.bbox.width;
+                })
+                .attr("y", function(d) {
+                    return d.y - d.bbox.height;
+                })
+                .attr("width", function(d) {
+                    return d.bbox.width + 20;
+                })
+                .attr("height", function(d) {
+                    return d.bbox.height;
+                })
+                .style("fill", function(d) {
+                    return d.color;
+                });
+
+            // UPDATE
+
+            var firststagedecay = 0;
+            var secondstagedecay = 0;
+            var decaylimit = 50;
+            var secondstagedecaylimit = 2000;
+            function tick(e) {
+               // console.log(e.alpha,firststagedecay);
+                // If we've just started decaying reset our freezes
+                if (e.alpha > 0.095) {
+                    fiststagedecay = 0;
+                    secondstagedecay = 0;
+                }
+
+                // Freeze decay during high-strength
+                if (e.alpha < 0.05 && firststagedecay < decaylimit) {
+                    force.alpha(0.05);
+                    firststagedecay++;
+                }
+
+                // Freeze decay during low-strength
+                if (e.alpha < 0.006 && secondstagedecay < secondstagedecaylimit) {
+                    force.alpha(0.006);
+                    secondstagedecay++;
+                }
+
+                node
+                    .each(cluster(4 * e.alpha * e.alpha))
+                    .attr("cx", function(d) {
+                        return d.x;
+                    })
+                    .attr("cy", function(d) {
+                        return d.y;
+                    })
+                    .each(collide(0.2));
+
+                /*link
+                    .attr("x1", function(d) {
+                        return d.source.x;
+                    })
+                    .attr("y1", function(d) {
+                        return d.source.y;
+                    })
+                    .attr("x2", function(d) {
+                        return d.target.x;
+                    })
+                    .attr("y2", function(d) {
+                        return d.target.y;
+                    });*/
+                label
+                    .attr("x", function(d) {
+                        return d.x;
+                    })
+                    .attr("y", function(d) {
+                        return d.y;
+                    });
+                rect
+                    .attr("x", function(d) {
+                        return d.x - d.bbox.width / 2 - 10;
+                    })
+                    .attr("y", function(d) {
+                        return d.y - d.bbox.height + 3;
+                    });
+            }
+
+            // HELPERS
+
+            // Move d to be adjacent to the cluster node.
+            function cluster(alpha) {
+                return function(d) {
+                    var cluster = clusters[d.cluster];
+                    if (cluster === d) return;
+                    var x = d.x - cluster.x,
+                        y = d.y - cluster.y,
+                        //l = 0,
+                        l = Math.sqrt(x * x + y * y),// gathering all small nodes around it's own cluster //this line is circle shape
+                        r = d.radius + cluster.radius+10; //radius for all small nodes around the clusters
+                        //r = 10;
+                    if (l != r) {
+                        l = (l - r) / l * alpha;
+                        d.x -= x *= l;
+                        d.y -= y *= l;
+                        cluster.x += x;
+                        cluster.y += y;
+                    }
+                };
+            }
+
+            // Resolves collisions between d and all other circles.A quadtree is a two-dimensional recursive spatial subdivision
+            function collide(alpha) {
+                var quadtree = d3.geom.quadtree(nodes);
+                return function(d) {
+                    var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+                        nx1 = d.x - r,
+                        nx2 = d.x + r,
+                        ny1 = d.y - r,
+                        ny2 = d.y + r;
+                    quadtree.visit(function(quad, x1, y1, x2, y2) {
+                        if (quad.point && quad.point !== d) {
+                            var x = d.x - quad.point.x,
+                                y = d.y - quad.point.y,
+                                l = Math.sqrt(x * x + y * y),
+                                r =
+                                    d.radius +
+                                    quad.point.radius +
+                                    (d.cluster === quad.point.cluster ? padding : clusterPadding);
+                            if (l < r) {
+                                l = (l - r) / l * alpha;
+                                d.x -= x *= l;
+                                d.y -= y *= l;
+                                quad.point.x += x;
+                                quad.point.y += y;
+                            }
+                        }
+                        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+                    });
+                };
+            }
+
+            // Eye-candy :for turning radius of nodes from zero do it's own value
+            node
+                .transition()
+                .duration(1000)
+                .delay(function(d, i) {
+                    return i * 3;
+                })
+                .attrTween("r", function(d) {
+                    var i = d3.interpolate(0, d.radius);
+                    return function(t) {
+                        return (d.radius = i(t));
+                    };
+                });
+
+            // clamps value within range
+            /*function clamp(x, lower, upper) {
+                if (x < lower) x = lower;
+                if (x > upper) x = upper;
+                return x;
+            }*/
+
+            // Sets bounding box and colour of rect based on parent text node
+            function getBB(selection) {
+                selection.each(function(d) {
+                    d.bbox = this.getBBox();
+                    d.color = this.color;
+                    d.class = this.class;
+                });
+            }
+
+            //**mouse down event
+            /*d3.select("#svgContainer").on("mousedown", mousedown);
+            function mousedown() {
+                nodes.forEach(function(d, i) {
+                    d.x += (Math.random() - .5) * 5;
+                    d.y += (Math.random() - .5) * 5;
+                    //d.x += Math.random()* 50;
+                    //d.y += Math.random()* 40;
+                });
+                force.resume();
+            }*/
+    function restart() {
+        node = node.data(nodes);
+
+        node.enter().insert("circle", ".cursor")
+            .attr("class", "node")
+            .attr("r", 5)
+            .on("mousedown", mousedownNode);
+
+        node.exit()
+            .remove();
+
+        /*link = link.data(links);
+
+        link.enter().insert("line", ".node")
+            .attr("class", "link");
+        link.exit()
+            .remove();*/
+
+        force.start();
+    }
+
+
+}
+
+</script>
+<script>
+
+    mainFunction();
+
+
+</script>
