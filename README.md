@@ -12,4 +12,4 @@ All of our data have gathered from "[adrogame.com](https://adrogame.com/)"<br>
 5- Press Start Button, and you can work with data visualization <br>
 
 <br>
-<imge src="./CampVizDemo-min.png"></img>
+<img height="550" src="./CampVizDemo-min.png" title="App demo" width="1000"/>
