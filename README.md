@@ -10,3 +10,6 @@ All of our data have gathered from "[adrogame.com](https://adrogame.com/)"<br>
 3- Within the Root directory of the project, Enter `npm start`, and then press Return<br>
 4- Open your Browser, and in the URL type: `localhost:3000`<br>
 5- Press Start Button, and you can work with data visualization <br>
+
+<br>
+<imge src="./CampVizDemo-min.png"></img>
